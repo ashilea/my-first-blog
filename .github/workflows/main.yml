@@ -1,0 +1,45 @@
+name: AI Safe Workflow
+
+# Déclenchement uniquement sur des événements sécurisés
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Permet un déclenchement manuel
+
+jobs:
+  ai-job:
+    runs-on: ubuntu-latest
+
+    # Limiter les permissions pour réduire les risques
+    permissions:
+      contents: read       # Lire le code uniquement
+      issues: none         # Pas d'accès aux issues
+      pull-requests: none  # Pas d'accès aux PR
+      id-token: none       # Pas d'accès aux tokens sensibles
+      actions: read        # Actions nécessaires uniquement
+      packages: read       # Lecture si besoin de packages
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Exemple : installer Gemini CLI (ou autre agent)
+      - name: Install Gemini CLI
+        run: |
+          curl -sSL https://example.com/gemini-cli-install.sh | bash
+
+      # Étape sécurisée pour exécuter un agent AI
+      - name: Run AI Agent (Safe)
+        run: |
+          # Ne jamais injecter directement le contenu non fiable
+          # Exemple : traiter uniquement du code ou fichiers internes
+          # Variables d'environnement limitées
+          GEMINI_INPUT="Hello AI, analyze internal repo files only."
+          gemini-cli analyze --input "$GEMINI_INPUT" --safe-mode
+
+      # Étape facultative : publier un résultat sûr dans les artifacts
+      - name: Save AI results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ai-results
+          path: ./ai-results/
