@@ -39,7 +39,7 @@ jobs:
 
       # Étape facultative : publier un résultat sûr dans les artifacts
       - name: Save AI results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # <-- corrigé v4
         with:
           name: ai-results
           path: ./ai-results/
